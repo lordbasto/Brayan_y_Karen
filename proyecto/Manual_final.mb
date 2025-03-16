@@ -1,0 +1,392 @@
+  
+Manual
+
+Proyecto sistemas operativos
+Brayan Poloche - Karen Garcia
+
+● Cómo se ejecutaron e instalaron los scripts
+
+- **1 script:**
+
+	```bash
+	brayan@bayan-laptop:~$ sudo nano "/home/$USER/Brayan_y_Karen/segundo Scripts/	
+	resource_monitor.sh"
+	```
+nano:
+____________________________________________________________________________________________________________________________________________________________________________________
+#!/bin/bash
+
+# Archivo de log
+LOG_FILE="/var/log/system_stats.log"
+
+# Crea el archivo de log si no existe
+if [ ! -f $LOG_FILE ]; then
+    sudo touch $LOG_FILE
+    sudo chmod 666 $LOG_FILE
+fi
+
+while true; do
+    echo "-----------------------------" | tee -a $LOG_FILE
+    echo "📊 Monitor de Recursos" | tee -a $LOG_FILE
+    echo "-----------------------------" | tee -a $LOG_FILE
+
+    # Fecha y Hora
+    echo -e "\n📅 Fecha y Hora: $(date)" | tee -a $LOG_FILE
+
+    # Uso de CPU
+    echo -e "\n🖥️ Uso de CPU:" | tee -a $LOG_FILE
+    top -bn1 | grep "Cpu(s)" | awk '{print "Uso: " $2 + $4 "%"}' | tee -a $LOG_FILE
+
+    # Uso de Memoria RAM
+    echo -e "\n💾 Uso de Memoria RAM:" | tee -a $LOG_FILE
+    free -h | awk '/Mem/ {print "Usada: " $3 " / Total: " $2}' | tee -a $LOG_FILE
+
+    # Espacio en Disco
+    echo -e "\n🖴 Espacio en Disco:" | tee -a $LOG_FILE
+    df -h | awk 'NR==2 {print "Usado: " $3 " / Total: " $2}' | tee -a $LOG_FILE
+
+    # Uso de Red (si ifstat está instalado)
+    if command -v ifstat &> /dev/null; then
+        echo -e "\n🌐 Uso de Red:" | tee -a $LOG_FILE
+        ifstat 1 1 | tail -n 1 | awk '{print "Subida: " $1 " KB/s, Bajada: " $2 " KB/s"}' | tee -a $LOG_FILE
+    else
+        echo -e "\n🌐 Uso de Red: ifstat no está instalado." | tee -a $LOG_FILE
+    fi
+
+    # Tiempo de actividad del sistema (Uptime)
+    echo -e "\n⏳ Tiempo de actividad:" | tee -a $LOG_FILE
+    uptime -p | tee -a $LOG_FILE
+
+    echo -e "\n-----------------------------" | tee -a $LOG_FILE
+    # Espera 5 segundos antes de actualizar
+    sleep 5
+done
+
+____________________________________________________________________________________________________________________________________________________________________________________
+
+	- **nano** → Abre el editor de texto en la terminal para crear o modificar 
+	archivos.
+	- **tee** → Guarda la salida de un comando en un archivo y también la muestra en 
+	pantalla.
+	- **date** → Muestra fecha y hora actual.
+	- **top** → Muestra el uso del sistema en tiempo real (CPU, RAM, procesos).
+	- **awk** → Procesador de textos y datos en la terminal, útil para manipular y 
+	extraer información de archivos o comandos.
+	- **free** → Muestra información sobre la memoria RAM disponible y usada.
+	- **df** → Muestra el uso del disco duro.
+	- **ifstat** → Muestra el tráfico de red en tiempo real.
+	- **uptime** → Muestra el tiempo que lleva encendido el sistema.
+	- **sleep** → Pausa la ejecución del script por un tiempo específico.
+
+	```bash
+	brayan@bayan-laptop:~$ sudo chmod +x "/home/$USER/Brayan_y_Karen/segundo Scripts/
+	resource_monitor.sh"
+	```
+
+	- **chmod** → Cambia permisos de archivos.
+	- **+x** → Hace que el archivo sea ejecutable.
+
+	Para ejecutarlo:
+		```bash
+		brayan@bayan-laptop:~/Brayan_y_Karen/segundo Scripts$ ./
+		resource_monitor.sh
+		```
+resultado del cmd:
+____________________________________________________________________________________________________________________________________________________________________________________
+brayan@brayan-laptop:~/Brayan_y_Karen/segundo Scripts$ ./resource_monitor.sh
+
+=============================
+       Monitor de Recursos
+=============================
+
+📅 Fecha y Hora: jue 13 mar 2025 12:58:33 -05
+
+🖥️ Uso de CPU:
+Uso: 4.4%
+
+💾 Uso de Memoria RAM:
+Usada: 10Gi / Total: 17Gi
+
+🖴 Espacio en Disco:
+Usado: 88G / Total: 122G
+
+🌐 Uso de Red: ifstat no está instalado.
+
+⏳ Tiempo de actividad:
+up 4 hours, 52 minutes
+____________________________________________________________________________________________________________________________________________________________________________________
+
+- **2 script:**
+
+	```bash
+	brayan@bayan-laptop:~$ sudo nano "/home/$USER/Brayan_y_Karen/segundo Scripts/
+	backup_manager.sh"
+```
+nano:
+____________________________________________________________________________________________________________________________________________________________________________________
+#!/bin/bash
+
+SOURCE_DIR="/home/$USER/Documentos"
+
+BACKUP_DIR="/backups"
+
+BACKUP_FILE="$BACKUP_DIR/backup_$(date +%Y%m%d_%H%M%S).tar.gz"
+
+if [ ! -d "$BACKUP_DIR" ]; then
+    sudo mkdir -p "$BACKUP_DIR"
+    sudo chmod 777 "$BACKUP_DIR"
+fi
+
+echo "📦 Creando backup de $SOURCE_DIR en $BACKUP_FILE..."
+tar -czf "$BACKUP_FILE" "$SOURCE_DIR"
+
+if [ $? -eq 0 ]; then
+    echo "✅ Backup creado exitosamente: $BACKUP_FILE"
+else
+    echo "❌ Error al crear el backup."
+fi
+____________________________________________________________________________________________________________________________________________________________________________________
+
+	- **mkdir** → Crea directorios.
+	- **-p** → Evita errores si la carpeta ya existe.
+	- **tar** → Comprime y empaqueta archivos.
+
+	```bash
+	brayan@bayan-laptop:~$ sudo chmod +x "/home/$USER/Brayan_y_Karen/segundo Scripts/
+	backup_manager.sh"
+	```
+
+	Para ejecutarlo:
+		```bash
+		brayan@bayan-laptop:~/Brayan_y_Karen/segundo Scripts$ ./backup_manager.sh
+		```
+resultado del cmd:
+____________________________________________________________________________________________________________________________________________________________________________________
+brayan@brayan-laptop:~/Brayan_y_Karen/segundo Scripts$ ./backup_manager.sh
+📦 Creando backup de /home/brayan/Documentos en /backups/backup_20250313_130254.tar.gz...
+tar: Eliminando la ‘/’ inicial de los nombres
+✅ Backup creado exitosamente: /backups/backup_20250313_130254.tar.gz
+____________________________________________________________________________________________________________________________________________________________________________________
+
+- **3 script:**
+
+	```bash
+	brayan@bayan-laptop:~$ sudo nano "/home/$USER/Brayan_y_Karen/segundo Scripts/
+	log_analyzer.sh"
+	```
+nano:
+____________________________________________________________________________________________________________________________________________________________________________________
+#!/bin/bash
+
+# Colores para resaltar el texto
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # Sin color
+
+echo -e "${GREEN}🔍 Analizador de Logs (/var/log/syslog)${NC}"
+echo -n " 📝 Ingrese la palabra clave a buscar (por defecto: error): "
+read keyword
+
+# Si el usuario no ingresa nada, usar "error" como palabra clave
+keyword=${keyword:-error}
+
+echo -e "\n${GREEN}📋 Resultados para la palabra clave: ${RED}$keyword${NC}\n"
+
+# Buscar y formatear las líneas que contienen la palabra clave
+grep -i "$keyword" /var/log/syslog | awk '{print $1, $2, $3, $6, $7, $8}' | sed 's/^/➜ /'
+
+# Contar la cantidad de ocurrencias
+count=$(grep -ic "$keyword" /var/log/syslog)
+
+echo -e "\n${GREEN}📊 Total de ocurrencias encontradas: ${RED}$count${NC}"
+
+____________________________________________________________________________________________________________________________________________________________________________________
+
+	- **grep** → Busca palabras dentro de archivos o salidas de comandos.
+	- **sed** → Editor de flujo que permite modificar cadenas de texto.
+	- **read** → Permite la entrada de datos por el usuario.
+
+	```bash
+	brayan@bayan-laptop:~$ sudo chmod +x "/home/$USER/Brayan_y_Karen/segundo Scripts/
+	log_analyzer.sh"
+	```
+
+	Para ejecutarlo:
+		```bash
+		brayan@bayan-laptop:~/Brayan_y_Karen/segundo Scripts$ ./log_analyzer.sh
+		```
+resultado del cmd:
+____________________________________________________________________________________________________________________________________________________________________________________
+📌 Ingrese la palabra clave a buscar (por defecto: error): error
+
+📂 Resultados para la palabra clave: error
+
+📊 Total de ocurrencias encontradas: 768
+brayan@brayan-laptop:~/Brayan_y_Karen/segundo Scripts$ 
+
+____________________________________________________________________________________________________________________________________________________________________________________
+
+- **Crontab:**
+	```bash
+	brayan@brayan-laptop:~/Brayan_y_Karen/segundo Scripts$ crontab -e
+	```
+
+	- **Crontab** → Programa tareas automáticas en Linux.
+crontanb -e:
+____________________________________________________________________________________________________________________________________________________________________________________
+* * * * * sudo /home/$USER/Brayan_y_Karen/segundo Scripts/backup_manager.sh
+0 10 * * * sudo /home/$USER/Brayan_y_Karen/segundo Scripts/log_analyzer.sh
+* * * * * sudo /home/$USER/Brayan_y_Karen/segundo Scripts/resource_monitor.sh
+____________________________________________________________________________________________________________________________________________________________________________________
+
+
+● Cómo los scripts funcionan en diferentes distribuciones (Ubuntu, Debian y Kali Linux).
+
+Los scripts funcionan en diferentes distribuciones porque Ubuntu, Debian y Kali Linux comparten una base común en Debian y utilizan el mismo núcleo Linux. Tanto Ubuntu como Kali están basadas en Debian, lo que significa que toman su código fuente y lo modifican para crear su propia distribución. Como resultado, comparten muchas herramientas y comandos en común, permitiendo que los scripts funcionen de manera similar en todas ellas. Sin embargo, pueden existir pequeñas diferencias en herramientas preinstaladas, lo que podría requerir ajustes mínimos, como:
+
+	- **Instalación de ifstat:** En Debian y Ubuntu, si la herramienta no está 
+	presente, es necesario instalarla manualmente.
+	- **Disponibilidad de tar:** En Ubuntu, tar viene preinstalado. En Debian, si la 
+	instalación es mínima, puede ser necesario instalarlo.
+	- **Registro de eventos:**
+	- En Ubuntu y Debian, los eventos se registran en `/var/log/syslog`, por lo que 
+	los scripts pueden acceder a esta ubicación sin problemas.
+resultados en el cmd de debian:
+____________________________________________________________________________________________________________________________________________________________________________________
+  🕒 Tiempo de actividad:
+up 26 minutes
+
+========================================
+        Monitor de Recursos
+========================================
+
+📅 Fecha y Hora: vie 14 mar 2025 18:47:18 -05
+
+🖥️ Uso de CPU:
+Uso: 100%
+
+💾 Uso de Memoria RAM:
+Usada: 1,6Gi / Total: 1,9Gi
+
+🗂️ Espacio en Disco:
+Usado: 5,3G / Total: 21G
+
+🌐 Uso de Red:
+Subida: 0.15 KB/s, Bajada: 0.15 KB/s
+
+🕒 Tiempo de actividad:
+up 26 minutes
+
+ brayan@debian:~/Descargas$ ./backup_manager.sh
+
+📂 Creando backup de /home/brayan/Documentos en /backups/backup_20250314_185719.tar.gz...
+tar: Eliminando la ‘/’ inicial de los nombres
+
+✅ Backup creado exitosamente: /backups/backup_20250314_185719.tar.gz
+
+brayan@debian:~/Descargas$ 
+
+root@debian:~# /home/brayan/Descargas/log_analyzer.sh
+
+🔍 Analizador de Logs (/var/log/syslog)
+⭐ Ingrese la palabra clave a buscar (por defecto: error): 
+^[
+📂 Resultados para la palabra clave:
+
+grep: /var/log/syslog: No existe el fichero o el directorio
+grep: /var/log/syslog: No existe el fichero o el directorio
+
+📊 Total de ocurrencias encontradas:
+
+ ____________________________________________________________________________________________________________________________________________________________________________________
+	  - En Kali Linux, se utiliza `journalctl` en lugar de `/var/log/syslog`, por lo 
+	  que los scripts que dependen de este archivo de registro deben ajustarse para 
+	  usar `journalctl`.
+resultados en el cmd de kali:
+____________________________________________________________________________________________________________________________________________________________________________________
+  
+ (brayan@kali)-[~/Descargas]
+$ ./backup_manager.sh
+
+📂 Creando backup de /home/brayan/Documentos en /backups/backup_20250314_181425.tar.gz...
+tar: Eliminando la '/' inicial de los nombres
+✅ Backup creado exitosamente: /backups/backup_20250314_181425.tar.gz
+
+📅 Fecha y Hora: vie 14 mar 18:11:05 CST 2025
+
+🖥️ Uso de CPU:
+Uso: 6%
+
+💾 Uso de Memoria RAM:
+Usada: 1,6Gi / Total: 3,6Gi
+
+🗄️ Espacio en Disco:
+Usado: 146G / Total: 25G
+
+🌐 Uso de Red:
+Subida: 0.00 KB/s, Bajada: 0.00 KB/s
+
+⏳ Tiempo de actividad:
+up 5 minutes
+
+(brayan@kali)-[~/Descargas]
+$ chmod +x log_analyzer.sh
+
+(brayan@kali)-[~/Descargas]
+$ ./log_analyzer.sh
+
+🔍 Analizador de Logs (/var/log/syslog)
+⭐ Ingrese la palabra clave a buscar (por defecto: error): error
+
+📂 Resultados para la palabra clave: error
+
+grep: /var/log/syslog: No existe el fichero o el directorio
+grep: /var/log/syslog: No existe el fichero o el directorio
+
+📊 Total de ocurrencias encontradas:
+
+ ____________________________________________________________________________________________________________________________________________________________________________________
+	- **Servicio cron:**
+	  - En Ubuntu y Debian, el servicio cron suele estar activado por defecto.
+	  - En Kali Linux, es posible que cron esté deshabilitado, por lo que será 
+	  necesario activarlo.
+
+Estos pequeños ajustes garantizarán la compatibilidad de los scripts en las diferentes distribuciones.
+
+● Historial de commits en GitHub.
+	git log --oneline
+cmd de ubunto :
+____________________________________________________________________________________________________________________________________________________________________________________
+brayan@brayan-laptop:~/Brayan_y_Karen/proyecto$ git log --oneline
+50276d9 (HEAD -> main, origin/main, origin/HEAD) Documentacion secundaria - Tarea 1
+885b5ee Documentacion principal - Tarea 1
+fc04f3a Eliminando archivos de Tarea_1 para re-subir con commits individuales
+6ce0ce4 observar recursos del sistema - resource_monitor.sh - Proyecto del corte 1
+8cdb685 buscador de patrones en logs - log_analyzer.sh - Proyecto del corte 1
+8edcf83 automatizacion de bakcup - backup_manager.sh - Proyecto del corte 1
+7c5ace5 Eliminando archivos para re-subir con commits individuales
+ee70810 Proyecto del corte 1
+bc4c81d Tarea del corte 1
+409bf76 Eliminando carpetas para corregir commits
+96d9498 Desarrollo de Tarea primer corte
+eafb50a Restaurando archivos de proyecto como en commit 88a2850
+73a67e8 Proyecto de primer corte
+cc1ae55 desarrollo de la actividad tarea 1
+dc85869 Eliminando carpeta Brayan_y_Karen
+bcd8137 Renombrando 'segundo Scripts' a 'proyecto'
+f38d78c Eliminando archivos duplicados con prefijo 'escript'
+70cf909 scrip monitor
+50cdb58 scrip backup
+b7d8c45 Renombrando scripts con prefijo 'escript'
+37d8c45 Eliminando .gitkeep porque la carpeta ya tiene archivos
+cb28b7d Corrigiendo estructura de 'segundo Scripts'
+de5787b Eliminando referencia a submódulo 'segundo Scripts'
+50f9cdd Organizando scripts en la carpeta correcta
+732b0cd Movidos los scripts a la carpeta 'segundo Scripts'
+88a2850 proyecto_logs
+d67cf7d proyecto-backups
+96dc7cf Initial commit
+brayan@brayan-laptop:~/Brayan_y_Karen/proyecto$ 
+
+____________________________________________________________________________________________________________________________________________________________________________________
+

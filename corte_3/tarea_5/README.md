@@ -92,6 +92,10 @@ rosrun turtlesim turtle_teleop_key
 ```
 
 ---
+### 🖼️ Captura
+![Juego de Naves](https://github.com/lordbasto/Brayan_y_Karen/blob/main/corte_3/tarea_5/WhatsApp%20Image%202025-05-27%20at%208.06.46%20PM.jpeg)
+
+---
 
 ## 4. Ejecución de los proyectos
 
@@ -115,10 +119,6 @@ Ver la sección [3. ROS en Docker](#3-ros-en-docker)
 
 ---
 
-### 🖼️ Captura
-![Juego de Naves](https://github.com/lordbasto/Brayan_y_Karen/blob/main/corte_3/tarea_5/WhatsApp%20Image%202025-05-27%20at%208.06.46%20PM.jpeg)
-
----
 
 ## 5. Autor y Créditos
 

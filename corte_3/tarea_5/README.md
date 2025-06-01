@@ -1,4 +1,4 @@
-# Proyecto Final – Sistemas Operativos
+# Tarea 5 – Sistemas Operativos
 
 Este repositorio presenta el desarrollo de tres proyectos prácticos que exploran conceptos clave de simulación, programación gráfica y contenedores Docker. Se realizaron las siguientes actividades:
 

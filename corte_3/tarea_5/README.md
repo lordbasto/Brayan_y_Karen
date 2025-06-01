@@ -51,7 +51,7 @@ Un juego estilo arcade en el que el jugador controla una nave espacial que dispa
 - Efectos de sonido añadidos.
 
 ### 🖼️ Captura
-![Juego de Naves](./f183a13f-f5b9-454d-bcff-c3e464e5f19b.jpg)
+![Juego de Naves](https://github.com/lordbasto/Brayan_y_Karen/blob/main/corte_3/tarea_5/WhatsApp%20Image%202025-05-27%20at%208.06.32%20PM.jpeg)
 
 ---
 

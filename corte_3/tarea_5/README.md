@@ -32,7 +32,7 @@ Simulación de un pequeño robot que sigue una línea curva trazada sobre una pi
 - El movimiento se optimizó para hacer giros más suaves.
 
 ### 🖼️ Captura
-![Seguidor de Línea](./4b6be75f-0555-4b58-89e8-72dea19b7c79.jpg)
+![Seguidor de Línea](https://github.com/lordbasto/Brayan_y_Karen/blob/main/corte_3/tarea_5/WhatsApp%20Image%202025-05-27%20at%208.06.14%20PM.jpeg)
 
 ---
 
